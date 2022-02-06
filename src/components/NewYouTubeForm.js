@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Formik, Form, Field, ErrorMessage, FieldArray} from 'formik'
 import * as Yup from 'yup'
 import TextError from './TextError';
@@ -16,9 +16,23 @@ const initialValues ={
     phNumbers:[''],
 };
 
+const savedValues ={
+  name:'sachin',
+  email:'v@gmail.com',
+  channel:'mychannel',
+  comments:'welcome to formik',
+  social:{
+    facebook:'',
+    twitter:'',
+  },
+  phoneNumbers:['',''],
+  phNumbers:[''],
+};
+
 const onSubmit=(values,onSubmitProps)=>{
     console.log('Values',values);
     onSubmitProps.setSubmitting(false);
+    onSubmitProps.resetForm();
 }
 
 const validationSchema = Yup.object({
@@ -37,15 +51,17 @@ const validateComments = (value)=>{
 
 function NewYouTubeForm() {
   
+  const [formValue, setFormValue] = useState(null);
    
   return (
   <Formik
-    initialValues={initialValues}
+    initialValues={formValue || initialValues}
     validationSchema={validationSchema}
     onSubmit={onSubmit}
     validateOnChange={false}
     validateOnBlur={true}
     validateOnMount
+    enableReinitialize
     >
     {
       (formik)=>{
@@ -132,7 +148,8 @@ function NewYouTubeForm() {
 
           {/* <button className='btn btn-primary' disabled={!(formik.isValid && formik.dirty)} type='submit'>Submit</button> */}
           <button className='btn btn-primary' disabled={formik.isSubmitting} type='submit'>Submit</button>
-          
+          <button className='btn btn-primary' type='button' onClick={()=>setFormValue(savedValues)}>Load Saved Values</button>
+          <button type='reset'>Reset</button>
       </Form>
         )
       }
